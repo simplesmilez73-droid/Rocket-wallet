@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.binance.com https://lite-api.jup.ag https://api.mainnet-beta.solana.com wss://stream.binance.com:9443; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+  <title>Rocket Wallet</title>
+  
+
+<style>
+  :root {
+    --bg: #0a0f0c;
+    --bg-2: #0f1512;
+    --panel: #131a16;
+    --panel-2: #161f1a;
+    --card: #151d18;
+    --card-2: #101612;
+    --line: rgba(255,255,255,0.06);
+    --line-2: rgba(255,255,255,0.09);
+    --text: #f3f7f4;
+    --muted: #8ca08f;
+    --accent: #22c55e;
+    --accent-2: #16a34a;
+    --soft: rgba(34,197,94,0.12);
+    --soft-2: rgba(34,197,94,0.18);
+    --danger: #ef4444;
+    --radius: 22px;
+    --shadow: 0 18px 50px rgba(0,0,0,0.34);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: Inter, Arial, sans-serif;
+    background:
+      radial-gradient(circle at top, rgba(34,197,94,0.10), transparent 34%),
+      linear-gradient(180deg, #070a08 0%, #0c120f 100%);
+    color: var(--text);
+  }
+
+  button, input, select, textarea {
+    font: inherit;
+  }
+
+  .app {
+    width: 390px;
+    height: 760px;
+    margin: 24px auto;
+    border-radius: 30px;
+    overflow: hidden;
+    background: rgba(13,18,15,0.96);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px 12px;
+    background: linear-gradient(180deg, rgba(14,19,16,0.98) 0%, rgba(14,19,16,0.85) 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: white;
+    box-shadow: 0 10px 24px rgba(34,197,94,0.30);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  .logo:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+  }
+
+  .brand h1 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: -0.03em;
+  }
+
+  .brand p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .chip {
+    border: 1px solid var(--line);
+    background: #181f1b;
+    color: white;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.16s ease;
+  }
+
+  .chip:hover {
+    background: #1c241f;
+  }
+
+  .content {
+    flex: 1;
+    overflow: auto;
+    padding: 0 14px 12px;
+  }
+
+  .content::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .hero {
+    margin-top: 6px;
+    background: linear-gradient(135deg, rgba(34,197,94,0.16), rgba(22,163,74,0.05));
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 18px;
+  }
+
+  .hero-label {
+    color: #d7e7d9;
+    font-size: 12px;
+  }
+
+  .hero-value {
+    font-size: 31px;
+    font-weight: 800;
+    margin-top: 8px;
+    letter-spacing: -0.04em;
+  }
+
+  .hero-sub {
+    margin-top: 6px;
+    color: #b5d7bd;
+    font-size: 13px;
+  }
+
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .quick-btn {
+    border: 1px solid var(--line);
+    background: #161d19;
+    color: white;
+    border-radius: 18px;
+    padding: 12px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+  }
+
+  .quick-btn:hover {
+    background: #1b231e;
+    transform: translateY(-1px);
+    border-color: var(--line-2);
+  }
+
+  .section {
+    margin-top: 16px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+
+  .asset-row, .activity-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .asset-row:last-child,
+  .activity-row:last-child {
+    border-bottom: none;
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .coin {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    background: #1b231e;
+    border: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex: 0 0 auto;
+  }
+
+  .title {
+    font-weight: 700;
+  }
+
+  .muted {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .right {
+    text-align: right;
+    min-width: 0;
+  }
+
+  .val {
+    font-weight: 700;
+  }
+
+  .usd {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .pair-switch, .tf-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .pair-btn, .tf-btn {
+    border: 1px solid var(--line);
+    background: #181f1b;
+    color: #d8e3d9;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.16s ease;
+  }
+
+  .pair-btn.active, .tf-btn.active {
+    background: var(--soft);
+    color: white;
+    border: 1px solid rgba(34,197,94,0.35);
+  }
+
+  .pair-btn:hover, .tf-btn:hover {
+    background: #1d2520;
+  }
+
+  .chart-wrap {
+    margin-top: 8px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    background: #0d120e;
+    min-height: 280px;
+  }
+
+  #marketChart {
+    min-height: 280px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 13px 14px;
+    margin-top: 10px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: #121814;
+    color: white;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.16s ease, background 0.16s ease;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: rgba(34,197,94,0.35);
+    background: #141b16;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #728473;
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 13px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.16s ease, opacity 0.16s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.97;
+  }
+
+  .btn.secondary {
+    background: #18201b;
+    color: #dde8df;
+    border: 1px solid var(--line);
+  }
+
+  .result {
+    margin-top: 12px;
+    min-height: 18px;
+    padding: 12px;
+    border-radius: 14px;
+    background: #0f1411;
+    border: 1px solid var(--line);
+    color: #e8f0e9;
+    font-size: 13px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .sheet {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    width: 390px;
+    max-width: calc(100vw - 24px);
+    background: rgba(15,22,17,0.98);
+    border: 1px solid var(--line);
+    border-radius: 24px 24px 0 0;
+    padding: 16px 18px 22px;
+    box-shadow: 0 -12px 40px rgba(0,0,0,0.35);
+    display: none;
+    z-index: 20;
+    max-height: 85vh;
+    overflow: auto;
+  }
+
+  .sheet.show { display: block; }
+
+  .sheet-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .sheet-title {
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .close-btn {
+    border: 1px solid var(--line);
+    background: #181f1b;
+    color: white;
+    border-radius: 10px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .sheet-page { display: none; }
+  .sheet-page.active { display: block; }
+
+  .receive-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .qr-box {
+    width: 220px;
+    height: 220px;
+    background: white;
+    border-radius: 18px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qr-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .address-box {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    background: #0d120e;
+    border: 1px solid var(--line);
+    color: #e8f0e9;
+    font-size: 13px;
+    word-break: break-word;
+    text-align: center;
+  }
+
+  .bottom-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 12px 14px 18px;
+    border-top: 1px solid var(--line);
+    background: rgba(11,15,12,0.94);
+  }
+
+  .nav-btn {
+    border: 1px solid var(--line);
+    background: #161c18;
+    color: #cfdfd1;
+    border-radius: 16px;
+    padding: 12px 8px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.16s ease;
+  }
+
+  .nav-btn.active {
+    background: var(--soft);
+    color: white;
+    border: 1px solid rgba(34,197,94,0.35);
+  }
+
+  .accounts-drawer {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100vh;
+    background: rgba(14,20,16,0.98);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    box-shadow: -12px 0 32px rgba(0,0,0,0.35);
+    z-index: 50;
+    transition: right 0.22s ease;
+    padding: 18px 14px;
+    overflow: auto;
+  }
+
+  .accounts-drawer.show { right: 0; }
+
+  .accounts-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .account-item {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: #161c18;
+    color: white;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .account-item.active {
+    background: var(--soft);
+    border: 1px solid rgba(34,197,94,0.35);
+  }
+
+  #swapTokenResults button {
+    transition: 0.16s ease;
+  }
+
+  #swapTokenResults button:hover {
+    background: #1c241f !important;
+  }
+
+  #swapSelectedToken {
+    background: #101612 !important;
+  }
+</style>
+
+
+
+  <style id="rocket-accounts-style">
+    .accounts-drawer {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100vh;
+      background: rgba(14,20,16,0.98);
+      border-left: 1px solid rgba(255,255,255,0.08);
+      box-shadow: -12px 0 32px rgba(0,0,0,0.35);
+      z-index: 50;
+      transition: right 0.22s ease;
+      padding: 18px 14px;
+      overflow: auto;
+    }
+    .accounts-drawer.show { right: 0; }
+    .accounts-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .account-item {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: #141a15;
+      color: white;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .account-item.active {
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.35);
+    }
+    .account-item .muted {
+      margin-top: 4px;
+      display: block;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" onclick="goHome()" style="cursor:pointer;">✦</div>
+        <div>
+          <h1 id="walletTitle">Rocket</h1>
+          <p id="networkLabel">Mainnet</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="chip" onclick="openActionSheet('createEth')">Wallet</button>
+        <button class="chip" onclick="toggleAccountsDrawer()">Accounts</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div id="homePage" class="page active">
+        <div style="display:flex;gap:8px;margin-top:6px;margin-bottom:10px;">
+          <button id="walletSwitchSol" class="pair-btn active" onclick="switchWalletView('sol')">Solana</button>
+          <button id="walletSwitchEth" class="pair-btn" onclick="switchWalletView('eth')">Ethereum</button>
+        </div>
+
+        <div class="hero">
+          <div class="hero-label">Portfolio Value</div>
+          <div class="hero-value" id="portfolioValue">$0.00</div>
+          <div class="hero-sub" id="portfolioSub">Unlock wallets to calculate value</div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="quick-btn" onclick="goToPage('swapPage')">Swap</button>
+          <button class="quick-btn" onclick="receiveForActiveWallet()">Receive</button>
+          <button class="quick-btn" onclick="goToPage('marketsPage')">Markets</button>
+          <button class="quick-btn" onclick="toggleAccountsDrawer(true)">Accounts</button>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Assets</div>
+          <div class="card">
+
+            <div id="ethAssetCard" style="display:none;">
+              <div class="asset-row">
+                <div class="left">
+                  <div class="coin">Ξ</div>
+                  <div>
+                    <div class="title">Ethereum</div>
+                    <div class="muted" id="ethAddressShort">Not unlocked</div>
+                  </div>
+                </div>
+                <div class="right">
+                  <div class="val" id="assetEthBalance">0 ETH</div>
+                  <div class="usd" id="assetEthValue">$0.00</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="solAssetCard">
+              <div class="asset-row">
+                <div class="left">
+                  <div class="coin">◎</div>
+                  <div>
+                    <div class="title">Solana</div>
+                    <div class="muted" id="solAddressShort">Not unlocked</div>
+                  </div>
+                </div>
+                <div class="right">
+                  <div class="val" id="assetSolBalance">0 SOL</div>
+                  <div class="usd" id="assetSolValue">$0.00</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        
+        <div class="section">
+          <div class="section-title">SPL Tokens</div>
+          <div class="card">
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <button class="btn secondary" style="margin-top:0;flex:1;" onclick="refreshSplTokens()">Refresh Tokens</button>
+            </div>
+            <div class="muted" style="margin-bottom:10px;">Tokens appear automatically when your wallet holds them</div>
+            <div id="splTokenList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="marketsPage" class="page">
+        <div class="card">
+          <div class="market-header">
+            <div>
+              <div class="pair" id="marketPairLabel">ETH/USDT</div>
+              <div class="muted">Live market</div>
+            </div>
+            <div>
+              <div class="market-price" id="marketCurrentPrice">$--</div>
+              <div class="market-status" id="marketStatus">Waiting</div>
+            </div>
+          </div>
+
+          <div class="pair-switch">
+            <button class="pair-btn active" id="pairETH" onclick="setMarketPair('ETH')">ETH</button>
+            <button class="pair-btn" id="pairSOL" onclick="setMarketPair('SOL')">SOL</button>
+          </div>
+
+          <div class="tf-row">
+            <button class="tf-btn" id="tf1s" onclick="setTimeframe('1s')">1s</button>
+            <button class="tf-btn active" id="tf1m" onclick="setTimeframe('1m')">1m</button>
+            <button class="tf-btn" id="tf5m" onclick="setTimeframe('5m')">5m</button>
+            <button class="tf-btn" id="tf15m" onclick="setTimeframe('15m')">15m</button>
+            <button class="tf-btn" id="tf1h" onclick="setTimeframe('1h')">1h</button>
+            <button class="tf-btn" id="tf4h" onclick="setTimeframe('4h')">4h</button>
+          </div>
+
+          <div class="chart-wrap">
+            <div id="marketChart"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="asset-row">
+            <div class="left">
+              <div class="coin">Ξ</div>
+              <div>
+                <div class="title">ETH</div>
+                <div class="muted">Home market price</div>
+              </div>
+            </div>
+            <div class="right">
+              <div class="val" id="homeEthPrice">$--</div>
+              <div class="usd" id="homeEthStatus">Waiting</div>
+            </div>
+          </div>
+
+          <div class="asset-row">
+            <div class="left">
+              <div class="coin">◎</div>
+              <div>
+                <div class="title">SOL</div>
+                <div class="muted">Home market price</div>
+              </div>
+            </div>
+            <div class="right">
+              <div class="val" id="homeSolPrice">$--</div>
+              <div class="usd" id="homeSolStatus">Waiting</div>
+            </div>
+          </div>
+        </div>
+      
+      </div>
+
+      
+      
+      <div id="swapPage" class="page">
+        <div class="card" style="padding:16px;">
+          <div class="section-title" style="margin-bottom:6px;">Swap</div>
+          <div class="muted" style="margin-bottom:14px;">Trade SOL for SPL tokens</div>
+
+          <div style="background:#101612;border:1px solid rgba(255,255,255,0.06);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:10px;">
+
+            <div style="background:#171d18;border-radius:18px;padding:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;">
+                <div class="muted">From</div>
+                <div class="muted">Balance: <span id="swapSolBalance">0 SOL</span></div>
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <div style="display:flex;align-items:center;gap:10px;background:#101612;padding:10px 12px;border-radius:14px;flex:0 0 auto;">
+                  <div style="font-size:18px;">◎</div>
+                  <div style="font-weight:700;">SOL</div>
+                </div>
+
+                <div style="flex:1;min-width:0;overflow:hidden;">
+                  <input id="swapAmount" placeholder="0.00" inputmode="decimal" style="margin-top:0;text-align:right;font-size:24px;line-height:1.1;font-weight:700;background:transparent;border:none;padding:0;width:100%;max-width:100%;min-width:0;display:block;box-sizing:border-box;color:white;" />
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;justify-content:center;margin:-2px 0;">
+              <button onclick="flipSwapDirection()" style="width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);background:#171d18;color:white;font-size:18px;cursor:pointer;">⇅</button>
+            </div>
+
+            <div style="background:#171d18;border-radius:18px;padding:14px;">
+              <div class="muted" style="margin-bottom:10px;">To</div>
+
+              <input id="swapToSearch" placeholder="Search token or paste contract address" style="margin-top:0;margin-bottom:10px;" />
+
+              <div id="swapSelectedToken" style="display:none;background:#101612;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:12px;margin-bottom:10px;"></div>
+
+              <div id="swapTokenResults" style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow:auto;"></div>
+
+              <select id="swapToToken" style="display:none;margin-top:10px;font-weight:700;">
+                <option value="">Select token</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="background:#101612;border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:14px;margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <div style="font-weight:700;">Quote Preview</div>
+              <div class="muted">Jupiter</div>
+            </div>
+            <div id="swapQuoteResult" class="result" style="margin-top:0;background:#0c110d;border:none;padding:0;min-height:auto;"></div>
+          </div>
+
+          <button class="btn" onclick="getSwapQuote()">Review Swap</button>
+          <button class="btn secondary" onclick="executeSwap()">Swap Now</button>
+        </div>
+      </div>
+
+
+      <div id="activityPage" class="page">
+        <div class="card">
+          <div class="section-title">Activity</div>
+
+          <div class="activity-row">
+            <div class="left">
+              <div class="coin">↗</div>
+              <div>
+                <div class="title">Send ETH</div>
+                <div class="muted">Latest ETH send result</div>
+              </div>
+            </div>
+            <div class="right">
+              <div class="val" id="activityEth">--</div>
+            </div>
+          </div>
+
+          <div class="activity-row">
+            <div class="left">
+              <div class="coin">↗</div>
+              <div>
+                <div class="title">Send SOL</div>
+                <div class="muted">Latest SOL send result</div>
+              </div>
+            </div>
+            <div class="right">
+              <div class="val" id="activitySol">--</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="settingsPage" class="page">
+        <div class="card">
+          <div class="section-title">Settings</div>
+          <div class="muted">Saved on this device</div>
+
+          <input id="settingWalletName" type="text" placeholder="Wallet name" value="Rocket Wallet" />
+          <select id="settingNetwork">
+            <option value="Mainnet">Mainnet</option>
+            <option value="Testnet">Testnet</option>
+          </select>
+
+          <button class="btn" onclick="saveSettings()">Save Settings</button>
+          <button class="btn secondary" onclick="resetSettings()">Reset Settings</button>
+          <div class="result" id="settingsResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="nav-btn active" onclick="showMainPage(event, 'homePage')">Home</button>
+      <button class="nav-btn" onclick="showMainPage(event, 'marketsPage')">Markets</button>
+      <button class="nav-btn" onclick="showMainPage(event, 'swapPage')">Swap</button>
+      <button class="nav-btn" onclick="showMainPage(event, 'settingsPage')">Settings</button>
+    </div>
+  </div>
+
+  <div class="sheet" id="actionSheet">
+    <div class="sheet-head">
+      <div class="sheet-title" id="sheetTitle">Wallet</div>
+      <button class="close-btn" onclick="closeActionSheet()">✕</button>
+    </div>
+
+    <div id="sheetCreateEth" class="sheet-page active">
+      <div class="muted">Create a new encrypted ETH wallet.</div>
+      <input id="createPassword" type="password" placeholder="Create ETH password" />
+      <button class="btn" onclick="createWallet()">Create ETH Wallet</button>
+      <div class="result" id="createResult"></div>
+    </div>
+
+    <div id="sheetOpenEth" class="sheet-page">
+      <div class="muted">Unlock your ETH wallet, receive, and send ETH.</div>
+      <input id="openPassword" type="password" placeholder="Enter ETH password" />
+      <button class="btn" onclick="openWallet()">Unlock ETH Wallet</button>
+      <button class="btn secondary" onclick="showReceiveSheet('ETH')">Receive ETH</button>
+      <div class="result" id="walletAddress"></div>
+      <div class="result" id="walletBalance"></div>
+      <input id="recipient" placeholder="Recipient ETH address" />
+      <input id="amount" placeholder="Amount in ETH" />
+      <button class="btn" onclick="sendEth()">Send ETH</button>
+      <div class="result" id="sendResult"></div>
+    </div>
+
+    <div id="sheetCreateSol" class="sheet-page">
+      <div class="muted">Create a new encrypted SOL wallet.</div>
+      <input id="createSolPassword" type="password" placeholder="Create SOL password" />
+      <button class="btn" onclick="createSolWallet()">Create SOL Wallet</button>
+      <div class="result" id="createSolResult"></div>
+    </div>
+
+    <div id="sheetOpenSol" class="sheet-page">
+      <div class="muted">Unlock your SOL wallet, receive, and send SOL.</div>
+      <input id="openSolPassword" type="password" placeholder="Enter SOL password" />
+      <button class="btn" onclick="openSolWallet()">Unlock SOL Wallet</button>
+      <button class="btn secondary" onclick="showSheet('importSol')">Login with Seed Phrase</button>
+      <button class="btn secondary" onclick="showReceiveSheet('SOL')">Receive SOL</button>
+      <div class="result" id="solWalletAddress"></div>
+      <div class="result" id="solWalletBalance"></div>
+      <input id="solRecipient" placeholder="Recipient Solana address" />
+      <input id="solAmount" placeholder="Amount in SOL" />
+      <button class="btn" onclick="sendSol()">Send SOL</button>
+      <div class="result" id="sendSolResult"></div>
+    </div>
+
+    
+    <div id="sheetImportSol" class="sheet-page">
+      <div class="muted">Import your Solana wallet using a 12/24 word seed phrase.</div>
+      <textarea id="importSolMnemonic" placeholder="Paste your Solana seed phrase here" style="width:100%;min-height:120px;margin-top:10px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);background:#121814;color:white;outline:none;font-size:14px;padding:13px 14px;resize:vertical;"></textarea>
+      <button class="btn" onclick="importSolWalletFromSeed()">Import SOL Wallet</button>
+      <div class="result" id="importSolResult"></div>
+    </div>
+
+    <div id="sheetReceive" class="sheet-page">
+      <div class="muted" id="receiveLabel">Receive</div>
+      <div class="receive-wrap">
+        <div class="qr-box">
+          <img id="receiveQr" alt="QR Code" />
+        </div>
+        <div class="address-box" id="receiveAddress">No address</div>
+        <button class="btn" onclick="copyReceiveAddress()">Copy Address</button>
+        <div class="result" id="receiveResult"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./node_modules/apexcharts/dist/apexcharts.min.js"></script>
+  
+  <div id="accountsDrawer" class="accounts-drawer">
+    <div class="accounts-row">
+      <div class="section-title" style="margin-bottom:0;">Solana Accounts</div>
+      <button class="close-btn" onclick="toggleAccountsDrawer(false)">✕</button>
+    </div>
+    <div class="muted" style="margin-bottom:12px;">Multiple wallets from one seed phrase</div>
+    <div id="accountsList"></div>
+    <button class="btn secondary" onclick="addDerivedSolAccount()">Add Account</button>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

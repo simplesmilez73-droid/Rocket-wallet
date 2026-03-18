@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>My Secure Wallet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      max-width: 700px;
+      margin: auto;
+    }
+    input, button {
+      margin: 8px 0;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .box {
+      border: 1px solid #ccc;
+      padding: 16px;
+      margin-top: 20px;
+      border-radius: 10px;
+    }
+    p {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Secure Wallet</h1>
+
+  <div class="box">
+    <h2>Create Wallet</h2>
+    <input id="createPassword" type="password" placeholder="Create a 
+password" />
+    <button onclick="createWallet()">Create New Wallet</button>
+    <p id="createResult"></p>
+  </div>
+
+  <div class="box">
+    <h2>Open Wallet</h2>
+    <input id="openPassword" type="password" placeholder="Enter wallet 
+password" />
+    <button onclick="openWallet()">Open Wallet</button>
+    <p id="walletAddress"></p>
+    <p id="walletBalance"></p>
+  </div>
+
+ <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>My Secure Wallet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      max-width: 700px;
+      margin: auto;
+    }
+    input, button {
+      margin: 8px 0;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .box {
+      border: 1px solid #ccc;
+      padding: 16px;
+      margin-top: 20px;
+      border-radius: 10px;
+    }
+    p {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Secure Wallet</h1>
+
+  <div class="box">
+    <h2>Create Wallet</h2>
+    <input id="createPassword" type="password" placeholder="Create a 
+password" />
+    <button onclick="createWallet()">Create New Wallet</button>
+    <p id="createResult"></p>
+  </div>
+
+  <div class="box">
+    <h2>Open Wallet</h2>
+    <input id="openPassword" type="password" placeholder="En
