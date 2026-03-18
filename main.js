@@ -58,7 +58,7 @@ app.whenReady().then(() => {
 // --- Nova Keychain bridge ---
 const keytar = require("keytar");
 
-const NOVA_KEYCHAIN_SERVICE = "Nova Wallet";
+const NOVA_KEYCHAIN_SERVICE = "Rocket Wallet";
 const NOVA_SOL_MNEMONIC_ACCOUNT = "solana-mnemonic";
 
 ipcMain.handle("keychain-save-sol-mnemonic", async (_event, mnemonic) => {
@@ -108,7 +108,7 @@ ipcMain.handle("import-sol-wallet-from-mnemonic", async (_event, mnemonic) => {
   const keypair = SolanaKeypair_import_rw.fromSeed(derived);
 
   // Keep the existing service/account name for compatibility
-  await keytar_import_rw.setPassword("Nova Wallet", "solana-mnemonic", phrase);
+  await keytar_import_rw.setPassword("Rocket Wallet", "solana-mnemonic", phrase);
 
   return {
     address: keypair.publicKey.toBase58(),

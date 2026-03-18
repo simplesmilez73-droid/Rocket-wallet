@@ -1,6 +1,6 @@
 {
   "name": "rocket-wallet",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Rocket Wallet desktop app",
   "main": "main.js",
   "author": "Nova",
