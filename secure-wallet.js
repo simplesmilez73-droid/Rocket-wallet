@@ -1,3 +1,4 @@
+const { autoUpdater } = require("electron-updater");
 const { ethers } = require("ethers");
 const fs = require("fs");
 const path = require("path");
@@ -49,3 +50,26 @@ module.exports = {
   getBalance,
   sendEth
 };
+
+
+// --- Auto Update ---
+app.whenReady().then(() => {
+  try {
+    autoUpdater.checkForUpdatesAndNotify();
+  } catch (e) {
+    console.error("Updater init failed:", e);
+  }
+});
+
+autoUpdater.on("update-available", () => {
+  console.log("Update available");
+});
+
+autoUpdater.on("update-downloaded", () => {
+  console.log("Update downloaded");
+  autoUpdater.quitAndInstall();
+});
+
+autoUpdater.on("error", (err) => {
+  console.error("Update error:", err);
+});
