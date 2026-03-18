@@ -1780,3 +1780,11 @@ window.openSendSheet = function () {
     showSendSheet("SOL");
   }
 };
+
+
+// --- App version display ---
+try {
+  const v = require("electron").ipcRenderer.sendSync("get-version");
+  const el = document.getElementById("appVersion");
+  if (el) el.innerText = "v" + v;
+} catch {}

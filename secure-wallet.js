@@ -1,3 +1,10 @@
+
+
+const { ipcMain, app } = require("electron");
+
+ipcMain.on("get-version", (event) => {
+  event.returnValue = app.getVersion();
+});
 const { autoUpdater } = require("electron-updater");
 const { ethers } = require("ethers");
 const fs = require("fs");
