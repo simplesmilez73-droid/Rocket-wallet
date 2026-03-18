@@ -115,3 +115,7 @@ ipcMain.handle("import-sol-wallet-from-mnemonic", async (_event, mnemonic) => {
     mnemonic: phrase
   };
 });
+
+ipcMain.on("get-app-version", (event) => {
+  event.returnValue = app.getVersion();
+});

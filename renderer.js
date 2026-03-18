@@ -1780,3 +1780,17 @@ window.openSendSheet = function () {
     showSendSheet("SOL");
   }
 };
+
+// --- Set app version dynamically ---
+const setAppVersion = () => {
+  const el = document.getElementById("appVersion");
+  if (!el) return;
+  try {
+    const version = require("electron").ipcRenderer.sendSync("get-app-version");
+    el.textContent = "v" + version;
+  } catch (e) {
+    el.textContent = "v?";
+  }
+};
+
+window.addEventListener("DOMContentLoaded", setAppVersion);
